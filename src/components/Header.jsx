@@ -17,7 +17,7 @@ const MyHeader = ({ collapsed, setCollapsed }) => {
         zIndex: 1,
         display: "flex",
         alignItems: "center",
-        gap: "1140px",
+        gap: "1160px",
         justifyContent: "space-between",
       }}
     >
