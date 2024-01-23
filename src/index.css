@@ -9,8 +9,8 @@
   color: #fff;
 }
 
-li {
-  background-color: transparent !important;
+header li {
+  background-color: black !important;
 }
 
 label {

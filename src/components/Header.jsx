@@ -1,4 +1,4 @@
-import { Button, ConfigProvider, Menu } from "antd";
+import { Button, Menu } from "antd";
 import { Header } from "antd/es/layout/layout";
 import {
   MenuFoldOutlined,
@@ -17,7 +17,7 @@ const MyHeader = ({ collapsed, setCollapsed }) => {
         zIndex: 1,
         display: "flex",
         alignItems: "center",
-        gap: "1160px",
+        gap: "1150px",
         justifyContent: "space-between",
       }}
     >
@@ -40,7 +40,7 @@ const MyHeader = ({ collapsed, setCollapsed }) => {
         items={[
           {
             key: 1,
-            label: `Chiqish `,
+            label: "Chiqish",
             icon: <LogoutOutlined />,
           },
         ]}
