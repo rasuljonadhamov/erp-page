@@ -8,3 +8,11 @@
   font-size: 20px;
   color: #fff;
 }
+
+li {
+  background-color: transparent !important;
+}
+
+label {
+  margin-bottom: 10px !important;
+}
