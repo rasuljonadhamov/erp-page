@@ -1,5 +1,6 @@
 import { Button, Dropdown, Flex, Input, Table, theme } from "antd";
 import { Content } from "antd/es/layout/layout";
+import { Outlet } from "react-router-dom";
 
 const items = [
   {
@@ -139,32 +140,7 @@ const MyContent = () => {
         borderRadius: borderRadiusLG,
       }}
     >
-      <Flex gap={20}>
-        <Flex gap={5} style={{ flexDirection: "column" }}>
-          <label>Guruh Nomi</label>
-          <Input
-            style={{ width: "200px", marginRight: "10px" }}
-            placeholder="Basic usage"
-          />
-        </Flex>
-        <Flex gap={5} style={{ flexDirection: "column" }}>
-          <label>Holati</label>
-          <Dropdown menu={{ items }} placement="bottom" arrow>
-            <Button>Active</Button>
-          </Dropdown>
-        </Flex>
-
-        <Button type="default" style={{ marginTop: "32px" }}>
-          Clear
-        </Button>
-      </Flex>
-      <Table
-        style={{ marginTop: "30px" }}
-        columns={columns}
-        dataSource={data}
-        bordered
-      />
-      ;
+      <Outlet />
     </Content>
   );
 };

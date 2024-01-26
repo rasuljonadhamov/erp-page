@@ -1,8 +1,24 @@
 import { Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import { GroupOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
+
+const menu = [
+  {
+    path: "/teachers",
+    label: "Teacher",
+    icon: <VideoCameraOutlined />,
+  },
+  {
+    path: "/classes",
+    label: "Classes",
+    icon: <GroupOutlined />,
+  },
+];
 
 const MySlider = ({ collapsed }) => {
+  const location = useLocation();
+  console.log(location.pathname);
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div
@@ -32,19 +48,12 @@ const MySlider = ({ collapsed }) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={["1"]}
-        items={[
-          {
-            key: "1",
-            icon: <VideoCameraOutlined />,
-            label: "Gruhlarim",
-          },
-          {
-            key: "2",
-            icon: <UserOutlined />,
-            label: "Profile",
-          },
-        ]}
+        defaultSelectedKeys={[location.pathname]}
+        items={menu.map((m) => ({
+          ...m,
+          key: m.path,
+          label: <Link to={m.path}>{m.label}</Link>,
+        }))}
       />
     </Sider>
   );
