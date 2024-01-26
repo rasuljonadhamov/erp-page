@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore/lite";
 import { useEffect, useState } from "react";
 import { db } from "../firebase/firebase";
@@ -17,7 +18,6 @@ export default () => {
 
   async function getTeachers() {
     setLoading(true);
-    console.log("teacher fired");
     const teachersCol = collection(db, "teachers");
     const teacherSnapshot = await getDocs(teachersCol);
     setData(teacherSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -40,16 +40,39 @@ export default () => {
   }
 
   async function deleteTeacher(id) {
-    setLoading(true);
-
     try {
+      setLoading(true);
       await deleteDoc(doc(db, "teachers", id));
       setData(data.filter((teacher) => teacher.id != id));
-      message.success("Deleted Succesfully")
+      message.success("Deleted Succesfully");
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
+  }
+
+  async function updateTeacher(id, updatedTeacherData) {
+    try {
+      setLoading(true);
+
+      const updatedTeacher = {
+        ...updatedTeacherData,
+      };
+
+      await updateDoc(doc(db, "teachers", id), updatedTeacher);
+
+      setData(
+        data.map((teacher) => (teacher.id === id ? updatedTeacher : teacher))
+      );
+
+      message.success("Teacher updated successfully");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error updating teacher:", error);
+      message.error("Failed to update teacher");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -60,6 +83,7 @@ export default () => {
     getTeachers,
     deleteTeacher,
     addTeacher,
+    updateTeacher,
     loading,
     data,
     open,

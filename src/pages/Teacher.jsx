@@ -1,17 +1,35 @@
-import { Button, Drawer, Flex, Form, Input, Table } from "antd";
-import { PlusCircleOutlined, DeleteFilled } from "@ant-design/icons";
-import { useEffect } from "react";
+import { Button, Drawer, Flex, Form, Input, Table, message } from "antd";
+import {
+  PlusCircleOutlined,
+  DeleteFilled,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import useTeacher from "../hooks/useTeacher";
 
 const Teacher = () => {
-  const { data, loading, addTeacher, deleteTeacher, open, setOpen } =
-    useTeacher();
+  const [editTeacher, setEditTeacher] = useState(null);
+  const {
+    data,
+    loading,
+    addTeacher,
+    deleteTeacher,
+    updateTeacher,
+    open,
+    setOpen,
+  } = useTeacher();
   const [form] = Form.useForm();
   console.log(data);
 
   const onFinish = (values) => {
-    addTeacher(values);
-    console.log("Success:", values);
+    if (editTeacher) {
+      updateTeacher(editTeacher.id, values);
+      setEditTeacher(null); // Clear editing state
+      message.success("Teacher updated successfully");
+    } else {
+      addTeacher(values);
+      message.success("Teacher added successfully");
+    }
   };
 
   useEffect(() => {
@@ -19,6 +37,11 @@ const Teacher = () => {
       form.resetFields();
     }
   }, [open]);
+
+  const handleEditTeacher = (id) => {
+    setEditTeacher(data.find((teacher) => teacher.id === id));
+    setOpen(true); // Open the drawer for editing
+  };
 
   const columns = [
     {
@@ -35,13 +58,21 @@ const Teacher = () => {
       title: "Actions",
       key: "lastname",
       render: (record) => (
-        <Button
-          loading={loading}
-          type="primary"
-          onClick={() => deleteTeacher(record.id)}
-          danger
-          icon={<DeleteFilled />}
-        ></Button>
+        <>
+          <Button
+            loading={loading}
+            type="primary"
+            onClick={() => deleteTeacher(record.id)}
+            danger
+            icon={<DeleteFilled />}
+          ></Button>
+          <Button
+            type="primary"
+            icon={<UserSwitchOutlined />}
+            loading={loading}
+            onClick={() => handleEditTeacher(record.id)}
+          ></Button>
+        </>
       ),
     },
   ];
@@ -71,7 +102,12 @@ const Teacher = () => {
         onClose={() => setOpen(false)}
         title="Add New Teacher"
       >
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={editTeacher}
+        >
           <Form.Item
             label="Isimni kiriting"
             name="firstName"
