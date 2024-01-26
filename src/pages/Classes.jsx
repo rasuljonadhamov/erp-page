@@ -1,22 +1,46 @@
 import { Button, Drawer, Flex, Form, Input, Select, Table } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import useTeacher from "../hooks/useTeacher";
-import { useState } from "react";
+import {
+  PlusCircleOutlined,
+  DeleteFilled,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import useStudent from "../hooks/useStudent";
 
 const Classes = () => {
-  const [selectVal, setSelectVal] = useState("a")
+  const [editTeacher, setEditTeacher] = useState(null);
+  const [selectVal, setSelectVal] = useState("a");
   const [form] = Form.useForm();
-  const { open, setOpen, loading, data } = useTeacher();
+  const {
+    open,
+    setOpen,
+    loading,
+    data,
+    addTeacher,
+    deleteTeacher,
+    updateTeacher,
+  } = useStudent();
 
   const onFinish = (values) => {
-    console.log({...values, selectVal});
+    if (editTeacher) {
+      updateTeacher(editTeacher.id, { ...values, selectVal })
+        .then(() => setOpen(false))
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      addTeacher({ ...values, selectVal });
+    }
+  };
 
-    console.log("hello");
+  const handleEditTeacher = (id) => {
+    setEditTeacher(data.find((teacher) => teacher.id === id));
+    setOpen(true);
   };
 
   const columns = [
     {
-      title: "Ism",
+      title: "O'quvchilar",
       dataIndex: "firstName",
       key: "firsName",
     },
@@ -25,7 +49,40 @@ const Classes = () => {
       dataIndex: "lastName",
       key: "lastname",
     },
+    {
+      title: "Class",
+      dataIndex: "selectVal",
+      key: "selectVal",
+    },
+    {
+      title: "Actions",
+      key: "id",
+      render: (record) => (
+        <>
+          <Button
+            loading={loading}
+            type="primary"
+            onClick={() => deleteTeacher(record.id)}
+            danger
+            style={{ marginRight: "10px" }}
+            icon={<DeleteFilled />}
+          ></Button>
+          <Button
+            type="primary"
+            icon={<UserSwitchOutlined />}
+            loading={loading}
+            onClick={() => handleEditTeacher(record.id)}
+          ></Button>
+        </>
+      ),
+    },
   ];
+
+  useEffect(() => {
+    if (!open) {
+      form.resetFields();
+    }
+  }, [open]);
 
   return (
     <div>
@@ -52,7 +109,12 @@ const Classes = () => {
         onClose={() => setOpen(false)}
         title="Add New Children"
       >
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={editTeacher}
+        >
           <Form.Item
             label="Isimni kiriting"
             name="firstName"
@@ -80,6 +142,12 @@ const Classes = () => {
 
           <Select
             defaultValue="A"
+            rules={[
+              {
+                required: true,
+                message: "Sinfni  kiriting!",
+              },
+            ]}
             style={{ width: "100%", marginBottom: "20px" }}
             name="value"
             onChange={(value) => setSelectVal(value)}

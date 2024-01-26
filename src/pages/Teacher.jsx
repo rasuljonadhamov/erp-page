@@ -19,12 +19,11 @@ const Teacher = () => {
     setOpen,
   } = useTeacher();
   const [form] = Form.useForm();
-  console.log(data);
 
   const onFinish = (values) => {
     if (editTeacher) {
       updateTeacher(editTeacher.id, values);
-      setEditTeacher(null); // Clear editing state
+      setEditTeacher(null);
       message.success("Teacher updated successfully");
     } else {
       addTeacher(values);
@@ -40,7 +39,7 @@ const Teacher = () => {
 
   const handleEditTeacher = (id) => {
     setEditTeacher(data.find((teacher) => teacher.id === id));
-    setOpen(true); // Open the drawer for editing
+    setOpen(true);
   };
 
   const columns = [
@@ -64,6 +63,7 @@ const Teacher = () => {
             type="primary"
             onClick={() => deleteTeacher(record.id)}
             danger
+            style={{ marginRight: "10px" }}
             icon={<DeleteFilled />}
           ></Button>
           <Button
