@@ -1,45 +1,50 @@
 import { Button, Drawer, Flex, Form, Input, Table } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-
-const columns = [
-  {
-    title: "Ism",
-    dataIndex: "firstName",
-    key: "firsName",
-  },
-  {
-    title: "Familya",
-    dataIndex: "lastName",
-    key: "lastname",
-  },
-];
-
-const data = [
-  {
-    firstName: "John",
-    lastName: "Doe",
-  },
-  {
-    firstName: "Johnny",
-    lastName: "Deep",
-  },
-];
+import { PlusCircleOutlined, DeleteFilled } from "@ant-design/icons";
+import { useEffect } from "react";
+import useTeacher from "../hooks/useTeacher";
 
 const Teacher = () => {
-  const [open, setOpen] = useState(false);
+  const { data, loading, addTeacher, deleteTeacher, open, setOpen } =
+    useTeacher();
+  const [form] = Form.useForm();
+  console.log(data);
 
   const onFinish = (values) => {
+    addTeacher(values);
     console.log("Success:", values);
   };
 
-  async function getTeachers() {
-    console.log("teacher fired");
-  }
-
   useEffect(() => {
-    getTeachers()
-  } , [])
+    if (!open) {
+      form.resetFields();
+    }
+  }, [open]);
+
+  const columns = [
+    {
+      title: "Ism",
+      dataIndex: "firstName",
+      key: "firsName",
+    },
+    {
+      title: "Familya",
+      dataIndex: "lastName",
+      key: "lastname",
+    },
+    {
+      title: "Actions",
+      key: "lastname",
+      render: (record) => (
+        <Button
+          loading={loading}
+          type="primary"
+          onClick={() => deleteTeacher(record.id)}
+          danger
+          icon={<DeleteFilled />}
+        ></Button>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -55,13 +60,18 @@ const Teacher = () => {
 
       <br />
 
-      <Table columns={columns} dataSource={data}></Table>
+      <Table
+        rowKey="id"
+        loading={loading}
+        columns={columns}
+        dataSource={data}
+      ></Table>
       <Drawer
         open={open}
         onClose={() => setOpen(false)}
         title="Add New Teacher"
       >
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
             label="Isimni kiriting"
             name="firstName"
@@ -87,7 +97,7 @@ const Teacher = () => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button loading={loading} type="primary" htmlType="submit">
               Add
             </Button>
           </Form.Item>

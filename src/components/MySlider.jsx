@@ -18,7 +18,7 @@ const menu = [
 
 const MySlider = ({ collapsed }) => {
   const location = useLocation();
-  console.log(location.pathname);
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div
